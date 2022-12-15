@@ -1,9 +1,12 @@
 .data
+	x: .space 4
 	nr_cerinta: .space 4
 	n: .space 4
 	v: .space 40000
 	frecv_leg: .space 404
 	read_format: .asciz "%ld"
+	print_format: .asciz "%ld "
+	flush_format: .asciz "\n"
 .text
 .globl main
 main:
@@ -68,15 +71,17 @@ for2:
 		je after_for3
 
 		pushl %ecx
-		subl $4, %esp
+		pushl $x
 		pushl $read_format
 		call scanf
 		addl $4, %esp
-		popl %eax
+		movl x, %eax
+		addl $4, %esp
 		popl %ecx
 
+		test:
 		movl $1, (%esi, %eax, 4)
-		stop:
+
 		decl %ebx
 		jmp for3
 	after_for3:
@@ -94,9 +99,48 @@ select_cerinta:
 	jmp exit
 
 cerinta1:
+	xorl %ecx, %ecx
+	lea v, %esi
+for1_cerinta1:
+	cmpl n, %ecx
+	je exit
+
+	movl n, %eax
+	mull %ecx
+	shl $2, %eax
+
+	addl %eax, %esi
+	xorl %ebx, %ebx
+
+	pushl %eax
+	pushl %ecx
+	for2_cerinta1:
+		cmpl n, %ebx
+		je after_for2_cerinta1
+
+		pushl (%esi, %ebx, 4)
+		pushl $print_format
+		call printf
+		addl $8, %esp
+
+		incl %ebx
+		jmp for2_cerinta1
+
+	after_for2_cerinta1:
+	pushl $flush_format
+	call printf
+	addl $4, %esp
+
+	popl %ecx
+	popl %eax
+	subl %eax, %esi
+	incl %ecx
+	jmp for1_cerinta1
+
 cerinta2:
 
 exit:
 	movl $1, %eax
 	xorl %ebx, %ebx
 	int $0x80
+
