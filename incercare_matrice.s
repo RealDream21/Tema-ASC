@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#blueprint pentru citit matrice si parcurgerea ei in general
+>>>>>>> master
 .data
 	n: .space 4
 	v: .space 40000
