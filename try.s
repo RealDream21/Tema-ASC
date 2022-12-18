@@ -13,9 +13,9 @@
 #matrix_mult(m1, m2, mres, n)
 matrix_mult:
 	pushl %ebp
-	movl %esp, %ebp
+	movl %esp,  %ebp
 
-	subl $12, %esp
+	subl $12,  %esp
 
 	#adresa de inceput a m1 in %esi, adresa de inceput a m2 in %edi
 	#adresa mres este in 16(%ebp)
@@ -35,8 +35,10 @@ for1_matrix:
 	movl $0, -8(%ebp)
 
 	movl -4(%ebp), %eax
-	mull 20(%ebp)
+	movl 20(%ebp), %ecx
+	mull %ecx
 	shl $2, %eax
+
 	addl %eax, 8(%ebp)
 	addl %eax, 16(%ebp)
 	#in 8(%ebp) ar trb acum sa fie pozitionata linia de inceput pt a[i][k]. Adica am a[i][] pana acum. pushl %eax ca sa stiu cat sa scad dupa
@@ -69,14 +71,18 @@ for1_matrix:
 			movl -12(%ebp), %eax
 			pushl %eax
 			addl %eax, 8(%ebp)
-			mull 20(%ebp)
+			stop:
+			movl 20(%ebp), %ecx
+			mull %ecx
 			shl $2, %eax
 			pushl %eax
 			addl %eax, 12(%ebp)
 
 			#fac c[i][j] = 8(%ebp) * 12(%ebp)
+
 			movl 8(%ebp), %eax
-			mull 12(%ebp)
+			movl 12(%ebp), %ecx
+			mull %ecx
 			addl %eax, 16(%ebp)
 
 			popl %eax
@@ -239,7 +245,7 @@ cerinta2:
 	pushl $m1
 	pushl $m1
 	call matrix_mult
-	subl $16, %esp
+	addl $16, %esp
 
 exit:
 	movl $1, %eax
