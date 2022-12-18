@@ -71,7 +71,7 @@ for1_matrix:
 			movl -12(%ebp), %eax
 			pushl %eax
 			addl %eax, 8(%ebp)
-			stop:
+
 			movl 20(%ebp), %ecx
 			mull %ecx
 			shl $2, %eax
@@ -82,8 +82,12 @@ for1_matrix:
 
 			movl 8(%ebp), %eax
 			movl 12(%ebp), %ecx
+			mult:
 			mull %ecx
-			addl %eax, 16(%ebp)
+
+			movl 16(%ebp), %ecx
+			addl %eax, %ecx
+			movl %ecx, 16(%ebp)
 
 			popl %eax
 			subl %eax, 12(%ebp)
@@ -106,6 +110,7 @@ for1_matrix:
 	jmp for1_matrix
 
 return:
+	addl $12, %esp
 	popl %ebp
 	ret
 
