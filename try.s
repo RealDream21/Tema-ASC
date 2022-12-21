@@ -74,7 +74,6 @@ for1_matrix:
 			pushl %eax
 			addl %eax, 8(%ebp)
 
-			calcul:
 			movl 20(%ebp), %ecx
 			movl -12(%ebp), %eax
 			mull %ecx
@@ -259,7 +258,6 @@ cerinta2:
 	pushl $mres
 	pushl $m1
 	pushl $m1
-	before_call:
 	call matrix_mult
 	addl $16, %esp
 
