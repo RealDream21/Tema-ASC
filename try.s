@@ -50,9 +50,10 @@ for1_matrix:
 		cmpl %eax, -8(%ebp)
 		je after_for2_matrix
 		#for(int j = 0; j < n; j++)
-
 		movl $0, -12(%ebp)
 		movl -8(%ebp), %eax
+		shl $2, %eax
+
 		addl %eax, 12(%ebp)
 		addl %eax, 16(%ebp)
 		pushl %eax
@@ -69,25 +70,34 @@ for1_matrix:
 			#=> 12(%ebp) += k * len << 2
 
 			movl -12(%ebp), %eax
+			shl $2, %eax
 			pushl %eax
 			addl %eax, 8(%ebp)
 
+			calcul:
 			movl 20(%ebp), %ecx
+			movl -12(%ebp), %eax
 			mull %ecx
 			shl $2, %eax
 			pushl %eax
 			addl %eax, 12(%ebp)
 
 			#fac c[i][j] = 8(%ebp) * 12(%ebp)
-
 			movl 8(%ebp), %eax
+			movl 0(%eax), %eax
 			movl 12(%ebp), %ecx
-			mult:
+			movl 0(%ecx), %ecx
 			mull %ecx
 
+			pushl %edi
+			movl 16(%ebp), %edi
 			movl 16(%ebp), %ecx
+			movl 0(%ecx), %ecx
 			addl %eax, %ecx
-			movl %ecx, 16(%ebp)
+			xorl %eax, %eax
+			movl %ecx, (%edi, %eax, 4)
+			popl %edi
+
 
 			popl %eax
 			subl %eax, 12(%ebp)
@@ -249,6 +259,7 @@ cerinta2:
 	pushl $mres
 	pushl $m1
 	pushl $m1
+	before_call:
 	call matrix_mult
 	addl $16, %esp
 
