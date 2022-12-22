@@ -123,6 +123,54 @@ return:
 	popl %ebp
 	ret
 
+init:
+	pushl %ebp
+	movl %esp, %ebp
+	subl $8, %esp
+
+	movl $0, -4(%ebp)
+
+for1_init:
+	movl 12(%ebp), %eax
+	cmpl %eax, -4(%ebp)
+	je return_init
+
+	movl -4(%ebp), %eax
+	movl 12(%ebp), %ecx
+	mull %ecx
+	shl $2, %eax
+
+	movl $0, -8(%ebp)
+
+	addl %eax, 8(%ebp)
+	pushl %eax
+	for2_init:
+		movl 12(%ebp), %eax
+		cmpl %eax, -8(%ebp)
+		je after_for2_init
+
+		movl -8(%ebp), %eax
+		shl $2, %eax
+		addl %eax, 8(%ebp)
+		movl 8(%ebp), %ecx
+		movl $0, 0(%ecx)
+
+		subl %eax, 8(%ebp)
+
+		incl -8(%ebp)
+		jmp for2_init
+
+	after_for2_init:
+	popl %eax
+	subl %eax, 8(%ebp)
+	incl -4(%ebp)
+	jmp for1_init
+
+return_init:
+	addl $8, %esp
+	popl %ebp
+	ret
+
 
 .globl main
 main:
@@ -253,15 +301,36 @@ for1_cerinta1:
 	jmp for1_cerinta1
 
 cerinta2:
-	pushl n
-	pushl $mres
-	pushl $m1
-	pushl $m1
-	call matrix_mult
-	addl $16, %esp
+	pushl %ebp
+	movl %esp, %ebp
+	subl $12, %esp
+
+	subl $4, %ebp
+	pushl %ebp
+	addl $4, %ebp
+	pushl $read_format
+	call scanf
+	addl $8, %esp
+
+	subl $8, %ebp
+	pushl %ebp
+	addl $8,  %ebp
+	pushl $read_format
+	call scanf
+	addl $8, %esp
+
+	subl $12, %ebp
+	pushl %ebp
+	addl $12, %ebp
+	pushl $read_format
+	call scanf
+	addl $8, %esp
+
+golire_stiva_cerinta2:
+	addl $12, %esp
+	popl %ebp
 
 exit:
 	movl $1, %eax
 	xorl %ebx, %ebx
 	int $0x80
-
