@@ -386,6 +386,58 @@ cerinta2:
 	call scanf
 	addl $8, %esp
 
+	pushl n
+	pushl $m1
+	pushl $mres
+	call copy
+	addl $12, %esp
+	movl -4(%ebp), %eax
+	decl -4(%ebp)
+for1_cerinta2:
+	#matricea trb ridicata la lung_drumului adica -4(%ebp)
+	movl -4(%ebp), %eax
+	cmpl $0, %eax
+	je afisare_cerinta2
+
+	pushl n
+	pushl $mres
+	pushl $m2
+	call copy
+	addl $12, %esp
+
+	pushl n
+	pushl $mres
+	call init
+	addl $8, %esp
+
+	pushl n
+	pushl $mres
+	pushl $m2
+	pushl $m1
+	call matrix_mult
+	addl $16, %esp
+
+	decl -4(%ebp)
+	jmp for1_cerinta2
+
+afisare_cerinta2:
+	lea mres, %esi
+
+	movl -8(%ebp), %eax
+	movl -12(%ebp), %ecx
+	mull n
+	shl $2, %eax
+	addl %eax, %esi
+
+	pushl (%esi, %ecx, 4)
+	pushl $print_format
+	call printf
+	addl $8, %esp
+
+	pushl $flush_format
+	call printf
+	addl $4, %esp
+
 golire_stiva_cerinta2:
 	addl $12, %esp
 	popl %ebp
