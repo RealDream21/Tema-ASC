@@ -232,13 +232,13 @@ citire_numar_cerinta:
 	pushl $nr_cerinta
 	pushl $read_format
 	call scanf
-	subl $8, %esp
+	addl $8, %esp
 
 citire_numar_noduri:
 	pushl $n
 	pushl $read_format
 	call scanf
-	subl $8, %esp
+	addl $8, %esp
 
 creare_matrice:
 #ebx = i-> i*4*nr_col = %eax. #ecx = j
