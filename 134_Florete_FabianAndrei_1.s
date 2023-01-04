@@ -473,6 +473,22 @@ golire_stiva_cerinta2:
 	popl %ebp
 
 exit:
+dealocare_matrici:
+	movl $91, %eax
+        movl mres, %ebx
+        movl $40000, %ecx
+        int $0x80
+
+	movl $91, %eax
+        movl m2, %ebx
+        movl $40000, %ecx
+        int $0x80
+
+	movl $91, %eax
+        movl m1, %ebx
+        movl $40000, %ecx
+        int $0x80
+
 	movl $1, %eax
 	xorl %ebx, %ebx
 	int $0x80

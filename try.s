@@ -2,9 +2,9 @@
 	x: .space 4
 	nr_cerinta: .space 4
 	n: .space 4
-	m1: .space 40000
-	m2: .space 40000
-	mres: .space 40000
+	m1: .space 4
+	m2: .space 4
+	mres: .space 4
 	frecv_leg: .space 404
 	read_format: .asciz "%ld"
 	print_format: .asciz "%ld "
@@ -228,17 +228,47 @@ return_copy:
 
 .globl main
 main:
+	movl $192, %eax
+	movl $0, %ebx
+	movl $40000, %ecx
+	movl $3, %edx
+	movl $33, %esi
+	movl $-1, %edi
+	movl $0, %ebp
+	int $0x80
+	movl %eax, m1
+
+	movl $192, %eax
+	movl $0, %ebx
+	movl $40000, %ecx
+	movl $3, %edx
+	movl $33, %esi
+	movl $-1, %edi
+	movl $0, %ebp
+	int $0x80
+	movl %eax, m2
+
+	movl $192, %eax
+	movl $0, %ebx
+	movl $40000, %ecx
+	movl $3, %edx
+	movl $33, %esi
+	movl $-1, %edi
+	movl $0, %ebp
+	int $0x80
+	movl %eax, mres
+
 citire_numar_cerinta:
 	pushl $nr_cerinta
 	pushl $read_format
 	call scanf
-	subl $8, %esp
+	addl $8, %esp
 
 citire_numar_noduri:
 	pushl $n
 	pushl $read_format
 	call scanf
-	subl $8, %esp
+	addl $8, %esp
 
 creare_matrice:
 #ebx = i-> i*4*nr_col = %eax. #ecx = j
@@ -271,7 +301,7 @@ after_for1:
 #v[i][[j] = 1
 
 	xorl %ecx, %ecx
-	lea m1, %esi
+	movl m1, %esi
 	lea frecv_leg, %edi
 for2:
 	cmpl n, %ecx
@@ -311,13 +341,13 @@ for2:
 select_cerinta:
 	cmpl $1, nr_cerinta
 	je cerinta1
-	cmpl $2, nr_cerinta
+	cmpl $3, nr_cerinta
 	je cerinta2
 	jmp exit
 
 cerinta1:
 	xorl %ecx, %ecx
-	lea m1, %esi
+	movl m1, %esi
 for1_cerinta1:
 	cmpl n, %ecx
 	je exit
@@ -356,8 +386,8 @@ for1_cerinta1:
 
 cerinta2:
 	pushl n
-	pushl $m1
-	pushl $m2
+	pushl m1
+	pushl m2
 	call copy
 	addl $12, %esp
 
@@ -385,6 +415,58 @@ cerinta2:
 	pushl $read_format
 	call scanf
 	addl $8, %esp
+
+	pushl n
+	pushl m1
+	pushl mres
+	call copy
+	addl $12, %esp
+	movl -4(%ebp), %eax
+	decl -4(%ebp)
+for1_cerinta2:
+	#matricea trb ridicata la lung_drumului adica -4(%ebp)
+	movl -4(%ebp), %eax
+	cmpl $0, %eax
+	je afisare_cerinta2
+
+	pushl n
+	pushl mres
+	pushl m2
+	call copy
+	addl $12, %esp
+
+	pushl n
+	pushl mres
+	call init
+	addl $8, %esp
+
+	pushl n
+	pushl mres
+	pushl m2
+	pushl m1
+	call matrix_mult
+	addl $16, %esp
+
+	decl -4(%ebp)
+	jmp for1_cerinta2
+
+afisare_cerinta2:
+	movl mres, %esi
+
+	movl -8(%ebp), %eax
+	movl -12(%ebp), %ecx
+	mull n
+	shl $2, %eax
+	addl %eax, %esi
+
+	pushl (%esi, %ecx, 4)
+	pushl $print_format
+	call printf
+	addl $8, %esp
+
+	pushl $flush_format
+	call printf
+	addl $4, %esp
 
 golire_stiva_cerinta2:
 	addl $12, %esp

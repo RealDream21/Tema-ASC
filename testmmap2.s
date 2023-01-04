@@ -24,7 +24,11 @@ main:
 	movl $0, %ebp
 	int $0x80
 
-	movl %eax, pointer2
+	movl $91, %eax
+	movl pointer2, %ebx
+	movl $40000, %ecx
+	int $0x80
+
 exit:
 	movl $1, %eax
 	xorl %ebx, %ebx
